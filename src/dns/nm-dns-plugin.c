@@ -59,7 +59,7 @@ G_DEFINE_ABSTRACT_TYPE(NMDnsPlugin, nm_dns_plugin, G_TYPE_OBJECT)
 gboolean
 nm_dns_plugin_update(NMDnsPlugin *            self,
                      const NMGlobalDnsConfig *global_config,
-                     const CList *            ip_config_lst_head,
+                     const CList *            config_lst_head,
                      const char *             hostname,
                      GError **                error)
 {
@@ -67,7 +67,7 @@ nm_dns_plugin_update(NMDnsPlugin *            self,
 
     return NM_DNS_PLUGIN_GET_CLASS(self)->update(self,
                                                  global_config,
-                                                 ip_config_lst_head,
+                                                 config_lst_head,
                                                  hostname,
                                                  error);
 }

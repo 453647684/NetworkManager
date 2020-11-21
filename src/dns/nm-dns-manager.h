@@ -36,7 +36,17 @@ typedef struct {
     CList                    data_lst;
     CList                    ip_config_lst;
     NMDnsIPConfigType        ip_config_type;
+} NMDnsConfigIPData;
+
+typedef struct _NMDnsConfigData {
+    int                   ifindex;
+    struct _NMDnsManager *self;
+    CList                 data_lst_head;
+    CList                 configs_lst;
+
     struct {
+        GArray *nameservers;
+
         const char **search;
         char **      reverse;
 
@@ -61,14 +71,9 @@ typedef struct {
          *
          * With systemd-resolved, this is the value for SetLinkDefaultRoute(). */
         bool has_default_route : 1;
-    } domains;
-} NMDnsConfigIPData;
 
-typedef struct _NMDnsConfigData {
-    int                   ifindex;
-    struct _NMDnsManager *self;
-    CList                 data_lst_head;
-    CList                 configs_lst;
+    } prepped;
+
 } NMDnsConfigData;
 
 /*****************************************************************************/

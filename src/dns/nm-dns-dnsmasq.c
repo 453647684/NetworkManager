@@ -804,7 +804,7 @@ add_global_config(NMDnsDnsmasq *           self,
 }
 
 static void
-add_ip_config(NMDnsDnsmasq *self, GVariantBuilder *servers, const NMDnsConfigIPData *ip_data)
+add_ip_config(NMDnsDnsmasq *self, GVariantBuilder *servers, const NMDnsConfigData *data)
 {
     NMIPConfig *  ip_config = ip_data->ip_config;
     gconstpointer addr;
@@ -846,19 +846,19 @@ add_ip_config(NMDnsDnsmasq *self, GVariantBuilder *servers, const NMDnsConfigIPD
 static GVariant *
 create_update_args(NMDnsDnsmasq *           self,
                    const NMGlobalDnsConfig *global_config,
-                   const CList *            ip_config_lst_head,
+                   const CList *            config_lst_head,
                    const char *             hostname)
 {
-    GVariantBuilder          servers;
-    const NMDnsConfigIPData *ip_data;
+    GVariantBuilder        servers;
+    const NMDnsConfigData *data;
 
     g_variant_builder_init(&servers, G_VARIANT_TYPE("aas"));
 
     if (global_config)
         add_global_config(self, &servers, global_config);
     else {
-        c_list_for_each_entry (ip_data, ip_config_lst_head, ip_config_lst)
-            add_ip_config(self, &servers, ip_data);
+        c_list_for_each_entry (data, config_lst_head, configs_lst)
+            add_ip_config(self, &servers, data);
     }
 
     return g_variant_new("(aas)", &servers);
@@ -1122,7 +1122,7 @@ start_dnsmasq(NMDnsDnsmasq *self, gboolean force_start, GError **error)
 static gboolean
 update(NMDnsPlugin *            plugin,
        const NMGlobalDnsConfig *global_config,
-       const CList *            ip_config_lst_head,
+       const CList *            config_lst_head,
        const char *             hostname,
        GError **                error)
 {
@@ -1134,7 +1134,7 @@ update(NMDnsPlugin *            plugin,
 
     nm_clear_pointer(&priv->set_server_ex_args, g_variant_unref);
     priv->set_server_ex_args =
-        g_variant_ref_sink(create_update_args(self, global_config, ip_config_lst_head, hostname));
+        g_variant_ref_sink(create_update_args(self, global_config, config_lst_head, hostname));
 
     send_dnsmasq_update(self);
     return TRUE;
