@@ -199,6 +199,13 @@ nm_ip4_addr_is_localhost(in_addr_t addr4)
 
 /*****************************************************************************/
 
+typedef struct {
+    guint8   addr_family;
+    NMIPAddr addr;
+} NMIPAddrTyped;
+
+/*****************************************************************************/
+
 struct ether_addr;
 
 static inline int
